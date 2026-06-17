@@ -14,7 +14,10 @@ class EventsTable
     {
         return $table
             ->columns([
-                TextColumn::make('championship_id')
+                TextColumn::make('name')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('championship.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

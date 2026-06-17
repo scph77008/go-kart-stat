@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class EventForm
@@ -15,9 +15,9 @@ class EventForm
                 TextInput::make('name')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('championship_id')
+                Select::make('championship_id')
+                    ->relationship('championship', 'name')
                     ->required()
-                    ->numeric(),
             ]);
     }
 }

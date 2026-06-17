@@ -11,4 +11,8 @@ class Event extends Model
         'championship_id'
     ];
 
+    public function championship()
+    {
+        return $this->belongsTo(Championship::class);
+    }
 }
