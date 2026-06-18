@@ -13,6 +13,7 @@ class Event extends Model
         'date',
         'duration',
         'duration_in_minutes',
+        'reverse',
     ];
 
     public function championship()

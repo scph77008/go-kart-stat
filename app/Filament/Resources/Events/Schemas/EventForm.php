@@ -29,6 +29,8 @@ class EventForm
                 Select::make('track_id')
                     ->relationship('track', 'name')
                     ->required(),
+                Toggle::make('reverse')
+                    ->required(),
             ]);
     }
 }

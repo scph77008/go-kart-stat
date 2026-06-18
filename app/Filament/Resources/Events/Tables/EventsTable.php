@@ -39,6 +39,8 @@ class EventsTable
                 TextColumn::make('track_id')
                     ->numeric()
                     ->sortable(),
+                IconColumn::make('reverse')
+                    ->boolean(),
             ])
             ->filters([
                 //
