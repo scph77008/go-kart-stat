@@ -17,7 +17,7 @@ class EventsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('championship_id')
+                TextColumn::make('championship.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -31,12 +31,11 @@ class EventsTable
                 TextColumn::make('date')
                     ->date()
                     ->sortable(),
-                TextColumn::make('duration')
+                TextColumn::make('duration_label')
+                    ->label('Duration')
                     ->numeric()
                     ->sortable(),
-                IconColumn::make('duration_in_minutes')
-                    ->boolean(),
-                TextColumn::make('track_id')
+                TextColumn::make('track.name')
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('reverse')

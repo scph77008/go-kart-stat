@@ -2,8 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $name
+ * @property int $championship_id
+ * @property int $track_id
+ * @property string $date
+ * @property int $duration
+ * @property boolean $duration_in_minutes
+ * @property boolean $reverse
+ */
 class Event extends Model
 {
     protected $fillable = [
@@ -24,5 +34,28 @@ class Event extends Model
     public function track()
     {
         return $this->belongsTo(Track::class);
+    }
+
+    protected function durationLabel(): Attribute
+    {
+        if($this->duration_in_minutes) {
+            return $this->durationLabelInMinutes();
+        }
+
+        return $this->durationLabelInLaps();
+    }
+
+    private function durationLabelInMinutes()
+    {
+        return Attribute::make(
+            get: fn () => sprintf('%2.f ч.', $this->duration / 60)
+        );
+    }
+
+    private function durationLabelInLaps()
+    {
+        return Attribute::make(
+            get: fn () => sprintf('%d кр', $this->duration)
+        );
     }
 }
