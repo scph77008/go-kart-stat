@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Filament\Resources\Events\EventType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -31,6 +32,14 @@ class EventForm
                     ->required(),
                 Toggle::make('reverse')
                     ->required(),
+                TextInput::make('participants')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                Select::make('type')
+                    ->required()
+                    ->options(EventType::class)
+                    ->default('team'),
             ]);
     }
 }

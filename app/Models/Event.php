@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Resources\Events\EventType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,10 +22,15 @@ class Event extends Model
         'championship_id',
         'track_id',
         'date',
+        'type',
         'participants',
         'duration',
         'duration_in_minutes',
         'reverse',
+    ];
+
+    protected $casts = [
+        'type' => EventType::class,
     ];
 
     public function championship()

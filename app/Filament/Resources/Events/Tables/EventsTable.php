@@ -41,6 +41,11 @@ class EventsTable
                     ->sortable(),
                 IconColumn::make('reverse')
                     ->boolean(),
+                TextColumn::make('participants')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('type')
+                    ->searchable(),
             ])
             ->filters([
                 //
