@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
 {
+    protected $fillable = [
+        'event_id',
+        'team_id',
+        'position'
+    ];
+
     public function event()
     {
         return $this->belongsTo(Event::class);

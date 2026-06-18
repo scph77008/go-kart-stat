@@ -21,6 +21,7 @@ class Event extends Model
         'championship_id',
         'track_id',
         'date',
+        'participants',
         'duration',
         'duration_in_minutes',
         'reverse',
