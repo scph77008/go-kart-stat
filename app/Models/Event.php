@@ -8,11 +8,20 @@ class Event extends Model
 {
     protected $fillable = [
         'name',
-        'championship_id'
+        'championship_id',
+        'track_id',
+        'date',
+        'duration',
+        'duration_in_minutes',
     ];
 
     public function championship()
     {
         return $this->belongsTo(Championship::class);
+    }
+
+    public function track()
+    {
+        return $this->belongsTo(Track::class);
     }
 }
