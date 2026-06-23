@@ -6,8 +6,8 @@ use App\Models\Participant;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -44,8 +44,27 @@ class EntriesRelationManager extends RelationManager
                 ->required(),
             TextInput::make('number')
                 ->numeric(),
-            Textarea::make('comment')
-                ->columnSpanFull(),
+
+            Repeater::make('results')
+                ->relationship()
+                ->schema([
+                    Select::make('result_category_id')
+                        ->label('Зачёт')
+                        ->options(fn ($livewire) =>
+                        $livewire->ownerRecord
+                            ->resultCategories
+                            ->pluck('name', 'id')
+                        )
+                        ->required(),
+
+                    TextInput::make('position')
+                        ->numeric()
+                        ->required(),
+
+                    TextInput::make('gap')
+                        ->label('Отставание, %'),
+                ])
+
         ]);
     }
 

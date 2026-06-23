@@ -13,6 +13,10 @@ class EntryResult extends Model
         'gap',
     ];
 
+    protected $casts = [
+        'gap' => 'float'
+    ];
+
     public function entry()
     {
         return $this->belongsTo(Entry::class);
