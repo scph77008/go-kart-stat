@@ -45,7 +45,7 @@ class EntryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListEntries::route('/'),
+            //'index' => ListEntries::route('/'),
             'create' => CreateEntry::route('/create'),
             'edit' => EditEntry::route('/{record}/edit'),
         ];

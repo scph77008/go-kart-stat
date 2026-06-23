@@ -42,7 +42,7 @@ class ParticipantResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListParticipants::route('/'),
+            //'index' => ListParticipants::route('/'),
             'create' => CreateParticipant::route('/create'),
             'edit' => EditParticipant::route('/{record}/edit'),
         ];
