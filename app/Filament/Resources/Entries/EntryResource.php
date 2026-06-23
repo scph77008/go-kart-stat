@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Entries;
 use App\Filament\Resources\Entries\Pages\CreateEntry;
 use App\Filament\Resources\Entries\Pages\EditEntry;
 use App\Filament\Resources\Entries\Pages\ListEntries;
+use App\Filament\Resources\Entries\RelationManagers\PilotsRelationManager;
+use App\Filament\Resources\Entries\RelationManagers\ResultsRelationManager;
 use App\Filament\Resources\Entries\Schemas\EntryForm;
 use App\Filament\Resources\Entries\Tables\EntriesTable;
 use App\Models\Entry;
@@ -35,14 +37,15 @@ class EntryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PilotsRelationManager::class,
+            ResultsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            // 'index' => ListEntries::route('/'),
+            'index' => ListEntries::route('/'),
             'create' => CreateEntry::route('/create'),
             'edit' => EditEntry::route('/{record}/edit'),
         ];

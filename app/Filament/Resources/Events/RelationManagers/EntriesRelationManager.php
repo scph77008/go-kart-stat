@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Events\RelationManagers;
 
+use App\Models\Participant;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -19,13 +21,21 @@ class EntriesRelationManager extends RelationManager
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Select::make('team_id')
-                ->relationship('team', 'name')
+            Select::make('participant_id')
+                ->label('Participant')
+                ->options(fn () => Participant::query()
+                    ->with(['team', 'pilot'])
+                    ->get()
+                    ->mapWithKeys(fn (Participant $participant) => [
+                        $participant->id => $participant->display_name,
+                    ]))
+                ->searchable()
+                ->preload()
                 ->required(),
-            TextInput::make('position')
-                ->required()
-                ->minValue(1)
-                ->maxValue(fn($livewire) => $livewire->ownerRecord->participants)
+            TextInput::make('number')
+                ->numeric(),
+            Textarea::make('comment')
+                ->columnSpanFull(),
         ]);
     }
 
@@ -34,10 +44,10 @@ class EntriesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                TextColumn::make('team.name')
-                    ->label('Команда'),
-                TextColumn::make('position')
-                    ->label('Позиция')
+                TextColumn::make('participant.display_name')
+                    ->label('Participant'),
+                TextColumn::make('number')
+                    ->numeric(),
             ])
             ->headerActions([
                 CreateAction::make(),

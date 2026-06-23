@@ -1,8 +1,18 @@
 <?php
 namespace App\Filament\Resources\Events;
 
-enum EventType: string
+use Filament\Support\Contracts\HasLabel;
+
+enum EventType: string implements HasLabel
 {
     case TEAM = 'team';
     case INDIVIDUAL = 'individual';
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::TEAM => 'Team',
+            self::INDIVIDUAL => 'Individual',
+        };
+    }
 }

@@ -15,9 +15,11 @@ class EntriesTable
         return $table
             ->columns([
                 TextColumn::make('event.name')
-                    ->numeric()
                     ->sortable(),
-                TextColumn::make('team.name')
+                TextColumn::make('participant.display_name')
+                    ->label('Participant')
+                    ->sortable(),
+                TextColumn::make('number')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

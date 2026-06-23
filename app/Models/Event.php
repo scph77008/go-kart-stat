@@ -48,6 +48,11 @@ class Event extends Model
         return $this->hasMany(Entry::class);
     }
 
+    public function resultCategories()
+    {
+        return $this->hasMany(ResultCategory::class);
+    }
+
     protected function durationLabel(): Attribute
     {
         if($this->duration_in_minutes) {

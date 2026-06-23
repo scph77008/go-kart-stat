@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\RelationManagers\EntriesRelationManager;
+use App\Filament\Resources\Events\RelationManagers\ResultCategoriesRelationManager;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
@@ -43,6 +44,7 @@ class EventResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ResultCategoriesRelationManager::class,
             EntriesRelationManager::class,
         ];
     }
