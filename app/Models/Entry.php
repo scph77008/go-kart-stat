@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $position
+ * @property int $event_id
+ * @property int $team_id
+ *
+ * @property-read \App\Models\Event $event
+ * @property-read \App\Models\Team $team
+ */
 class Entry extends Model
 {
     protected $fillable = [

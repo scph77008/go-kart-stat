@@ -43,6 +43,11 @@ class Event extends Model
         return $this->belongsTo(Track::class);
     }
 
+    public function entries()
+    {
+        return $this->hasMany(Entry::class);
+    }
+
     protected function durationLabel(): Attribute
     {
         if($this->duration_in_minutes) {
