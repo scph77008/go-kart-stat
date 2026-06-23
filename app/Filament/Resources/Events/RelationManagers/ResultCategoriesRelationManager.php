@@ -15,6 +15,17 @@ class ResultCategoriesRelationManager extends RelationManager
 {
     protected static string $relationship = 'resultCategories';
 
+
+    /**
+     * Переопределяем, чтобы можно было добавлять новые зачёты прямо из просмотра события
+     *
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([

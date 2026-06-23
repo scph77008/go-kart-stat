@@ -48,6 +48,11 @@ class Event extends Model
         return $this->hasMany(Entry::class);
     }
 
+    public function participant()
+    {
+        return $this->belongsTo(Participant::class);
+    }
+
     public function resultCategories()
     {
         return $this->hasMany(ResultCategory::class);

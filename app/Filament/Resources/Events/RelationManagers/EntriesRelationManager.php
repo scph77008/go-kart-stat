@@ -18,15 +18,25 @@ class EntriesRelationManager extends RelationManager
 {
     protected static string $relationship = 'entries';
 
+    /**
+     * Переопределяем, чтобы можно было добавлять новые участия прямо из просмотра события
+     *
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             Select::make('participant_id')
                 ->label('Participant')
-                ->options(fn () => Participant::query()
+                ->options(fn() => Participant::query()
                     ->with(['team', 'pilot'])
                     ->get()
-                    ->mapWithKeys(fn (Participant $participant) => [
+                    ->mapWithKeys(fn(Participant $participant) => [
                         $participant->id => $participant->display_name,
                     ]))
                 ->searchable()
@@ -50,7 +60,9 @@ class EntriesRelationManager extends RelationManager
                     ->numeric(),
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->visible(true)
+                    ->authorize(fn() => true),
             ])
             ->recordActions([
                 EditAction::make(),
