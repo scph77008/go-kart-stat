@@ -113,6 +113,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('event_id')->nullable()->constrained('events')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
+            $table->unsignedInteger('participants')->default(0);
             $table->timestamps();
 
             $table->unique(['event_id', 'name']);

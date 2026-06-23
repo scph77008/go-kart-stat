@@ -9,6 +9,7 @@ class ResultCategory extends Model
     protected $fillable = [
         'event_id',
         'name',
+        'participants',
     ];
 
     public function event()

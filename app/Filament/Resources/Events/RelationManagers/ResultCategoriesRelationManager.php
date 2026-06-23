@@ -21,6 +21,11 @@ class ResultCategoriesRelationManager extends RelationManager
             TextInput::make('name')
                 ->required()
                 ->maxLength(255),
+            TextInput::make('participants')
+                ->required()
+                ->numeric()
+                ->minValue(0)
+                ->default(fn ($livewire) => $livewire->ownerRecord->participants),
         ]);
     }
 
@@ -31,6 +36,9 @@ class ResultCategoriesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('participants')
+                    ->numeric()
+                    ->sortable(),
             ])
             ->headerActions([
                 CreateAction::make(),
