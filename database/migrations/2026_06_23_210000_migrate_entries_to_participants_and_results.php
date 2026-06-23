@@ -114,6 +114,7 @@ return new class extends Migration {
             $table->foreignId('event_id')->nullable()->constrained('events')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->unsignedInteger('participants')->default(0);
+            $table->boolean('is_required')->default(false);
             $table->timestamps();
 
             $table->unique(['event_id', 'name']);
@@ -123,7 +124,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('entry_id')->constrained('entries')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('result_category_id')->constrained('result_categories')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->unsignedInteger('position');
+            $table->unsignedInteger('position')->nullable();
             $table->string('gap')->nullable();
             $table->decimal('points', 8, 2)->nullable();
             $table->unsignedInteger('participants_count')->nullable();

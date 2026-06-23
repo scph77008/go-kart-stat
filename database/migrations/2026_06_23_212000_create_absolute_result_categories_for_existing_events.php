@@ -17,6 +17,7 @@ return new class extends Migration {
                     ],
                     [
                         'participants' => $event->participants,
+                        'is_required' => true,
                         'updated_at' => now(),
                         'created_at' => now(),
                     ],

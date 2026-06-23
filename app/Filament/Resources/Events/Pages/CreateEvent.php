@@ -13,7 +13,10 @@ class CreateEvent extends CreateRecord
     {
         $this->record->resultCategories()->firstOrCreate(
             ['name' => 'Абсолют'],
-            ['participants' => $this->record->participants],
+            [
+                'participants' => $this->record->participants,
+                'is_required' => true,
+            ],
         );
     }
 }

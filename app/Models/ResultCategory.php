@@ -10,6 +10,11 @@ class ResultCategory extends Model
         'event_id',
         'name',
         'participants',
+        'is_required',
+    ];
+
+    protected $casts = [
+        'is_required' => 'boolean',
     ];
 
     public function event()
