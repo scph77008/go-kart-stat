@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property $event_id
+ * @property $name
+ * @property $participants
+ * @property $is_required
+ */
 class ResultCategory extends Model
 {
     protected $fillable = [

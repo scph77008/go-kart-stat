@@ -33,11 +33,6 @@ class ResultsRelationManager extends RelationManager
                 ->numeric()
                 ->minValue(1),
             TextInput::make('gap'),
-            TextInput::make('points')
-                ->numeric(),
-            TextInput::make('participants_count')
-                ->numeric()
-                ->minValue(1),
         ]);
     }
 
@@ -52,10 +47,6 @@ class ResultsRelationManager extends RelationManager
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('gap'),
-                TextColumn::make('points')
-                    ->numeric(),
-                TextColumn::make('participants_count')
-                    ->numeric(),
             ])
             ->headerActions([
                 CreateAction::make(),

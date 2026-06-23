@@ -126,8 +126,6 @@ return new class extends Migration {
             $table->foreignId('result_category_id')->constrained('result_categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedInteger('position')->nullable();
             $table->string('gap')->nullable();
-            $table->decimal('points', 8, 2)->nullable();
-            $table->unsignedInteger('participants_count')->nullable();
             $table->timestamps();
 
             $table->unique(['entry_id', 'result_category_id']);

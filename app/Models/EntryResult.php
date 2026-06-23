@@ -11,12 +11,6 @@ class EntryResult extends Model
         'result_category_id',
         'position',
         'gap',
-        'points',
-        'participants_count',
-    ];
-
-    protected $casts = [
-        'points' => 'decimal:2',
     ];
 
     public function entry()

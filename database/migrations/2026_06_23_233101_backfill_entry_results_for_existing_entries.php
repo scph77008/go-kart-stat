@@ -32,7 +32,6 @@ return new class extends Migration {
                             'result_category_id' => $category->id,
                             'position' => null,
                             'gap' => null,
-                            'participants_count' => null,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
