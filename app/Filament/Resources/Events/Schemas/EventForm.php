@@ -27,8 +27,14 @@ class EventForm
                 TextInput::make('duration')
                     ->required()
                     ->numeric(),
-                Toggle::make('duration_in_minutes')
-                    ->required(),
+
+                // Тип длительности
+                Select::make('duration_type')
+                    ->required()
+                    ->options(EventDurationType::class)
+                    ->default(EventDurationType::LAPS->value),
+
+                // Картодром
                 Select::make('track_id')
                     ->relationship('track', 'name')
                     ->required(),
@@ -41,7 +47,8 @@ class EventForm
                 Select::make('type')
                     ->required()
                     ->options(EventType::class)
-                    ->default('team'),
+                    ->default(EventType::TEAM->value),
+
                 Repeater::make('resultCategories')
                     ->label('Result categories')
                     ->relationship('resultCategories')

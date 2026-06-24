@@ -25,7 +25,7 @@ class EventInfolist
                     ->date(),
                 TextEntry::make('duration')
                     ->numeric(),
-                IconEntry::make('duration_in_minutes')
+                IconEntry::make('duration_type')
                     ->boolean(),
                 TextEntry::make('track_id')
                     ->numeric(),

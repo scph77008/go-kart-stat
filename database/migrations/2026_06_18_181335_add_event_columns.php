@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\Events\EventDurationType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,9 +21,9 @@ return new class extends Migration {
                 ->after('date')
                 ->comment('Длительность');
 
-            $table->boolean('duration_in_minutes')
-                ->default(false)
-                ->comment('Длительность в минутах');
+            $table->enum('duration_type', array_column(EventDurationType::cases(), 'value'))
+                ->default(EventDurationType::LAPS->value)
+                ->comment('Тип длительности');
 
             $table
                 ->foreignId('track_id')
@@ -48,7 +49,7 @@ return new class extends Migration {
             $table->dropColumn([
                 'date',
                 'duration',
-                'duration_in_minutes',
+                'duration_type',
             ]);
         });
     }

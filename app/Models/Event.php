@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Resources\Events\EventDurationType;
 use App\Filament\Resources\Events\EventType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $track_id
  * @property string $date
  * @property int $duration
- * @property boolean $duration_in_minutes
  * @property boolean $reverse
  */
 class Event extends Model
@@ -25,12 +25,13 @@ class Event extends Model
         'type',
         'participants',
         'duration',
-        'duration_in_minutes',
+        'duration_type',
         'reverse',
     ];
 
     protected $casts = [
         'type' => EventType::class,
+        'duration_type' => EventDurationType::class,
     ];
 
     public function championship()
@@ -60,7 +61,7 @@ class Event extends Model
 
     protected function durationLabel(): Attribute
     {
-        if($this->duration_in_minutes) {
+        if($this->duration_type === EventDurationType::MINUTES) {
             return $this->durationLabelInMinutes();
         }
 

@@ -11,8 +11,8 @@ enum EventType: string implements HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::TEAM => 'Team',
-            self::INDIVIDUAL => 'Individual',
+            self::TEAM => 'Командный',
+            self::INDIVIDUAL => 'Индивидуальный',
         };
     }
 }
