@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\RelationManagers;
 
+use App\Models\ResultCategory;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -36,7 +37,7 @@ class ResultCategoriesRelationManager extends RelationManager
                 ->required()
                 ->numeric()
                 ->minValue(0)
-                ->default(fn ($livewire) => $livewire->ownerRecord->participants),
+                ->default(fn($livewire) => $livewire->ownerRecord->participants),
         ]);
     }
 
@@ -56,7 +57,18 @@ class ResultCategoriesRelationManager extends RelationManager
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    /**
+                     * Скрываем кнопку удаления у обязательных зачётов
+                     * Дополнительно блокируем удаление на уровне политики
+                     * @see \App\Policies\ResultCategoryPolicy::delete()
+                     */
+                    ->visible(fn($record) => $this->canDeleteRecord($record)),
             ]);
+    }
+
+    protected function canDeleteRecord(ResultCategory $record): bool
+    {
+        return !$record->is_required;
     }
 }

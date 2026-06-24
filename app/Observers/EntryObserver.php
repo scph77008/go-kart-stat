@@ -9,7 +9,7 @@ use App\Models\ResultCategory;
 class EntryObserver
 {
     /**
-     * Создаём результат при создании участия
+     * Создаём результат при создании участия во всех обязательных зачётах
      *
      * @param \App\Models\Entry $entry
      * @return void
