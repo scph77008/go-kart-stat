@@ -9,54 +9,6 @@ use App\Filament\Resources\Events\EventType;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::rename('participants', 'participants_old');
-
-        if (DB::getDriverName() === 'sqlite') {
-            $indexes = collect(DB::select("PRAGMA index_list('participants_old')"))
-                ->pluck('name');
-
-            if ($indexes->contains('participants_type_team_id_pilot_id_unique')) {
-                DB::statement('DROP INDEX participants_type_team_id_pilot_id_unique');
-            }
-        } else {
-            Schema::table('participants_old', function (Blueprint $table) {
-                $table->dropUnique(['type', 'team_id', 'pilot_id']);
-            });
-        }
-
-        Schema::create('participants', function (Blueprint $table) {
-            $table->id();
-            $table->enum('type', array_column(EventType::cases(), 'value'))->default(EventType::TEAM->value);
-            $table->foreignId('team_id')->nullable()->constrained('teams')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('pilot_id')->nullable()->constrained('pilots')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
-
-            $table->unique(['type', 'team_id', 'pilot_id']);
-        });
-
-        DB::table('participants_old')
-            ->orderBy('id')
-            ->each(function (object $participant): void {
-                $type = $participant->type;
-                $teamId = $type === EventType::TEAM->value ? $participant->team_id : null;
-                $pilotId = $type === EventType::INDIVIDUAL->value ? $participant->pilot_id : null;
-
-                if ($teamId === null && $pilotId === null) {
-                    return;
-                }
-
-                DB::table('participants')->insertOrIgnore([
-                    'id' => $participant->id,
-                    'type' => $type,
-                    'team_id' => $teamId,
-                    'pilot_id' => $pilotId,
-                    'created_at' => $participant->created_at,
-                    'updated_at' => $participant->updated_at,
-                ]);
-            });
-
-        Schema::drop('participants_old');
-
         Schema::table('entries', function (Blueprint $table) {
             $table->foreignId('participant_id')
                 ->nullable()
@@ -68,34 +20,7 @@ return new class extends Migration {
             $table->text('comment')->nullable()->after('number');
         });
 
-        DB::table('entries')
-            ->select('team_id')
-            ->whereNotNull('team_id')
-            ->distinct()
-            ->orderBy('team_id')
-            ->each(function (object $entry): void {
-                DB::table('participants')->insertOrIgnore([
-                    'type' => EventType::TEAM->value,
-                    'team_id' => $entry->team_id,
-                    'pilot_id' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            });
-
-        DB::statement(
-            "UPDATE entries
-             SET participant_id = (
-                 SELECT id
-                 FROM participants
-                 WHERE participants.type = 'team'
-                   AND participants.team_id = entries.team_id
-                 LIMIT 1
-             )"
-        );
-
         Schema::table('entries', function (Blueprint $table) {
-            $table->dropForeign(['team_id']);
             $table->dropColumn(['team_id', 'position']);
         });
 
@@ -142,16 +67,6 @@ return new class extends Migration {
             $table->foreignId('team_id')->nullable()->after('event_id')->constrained('teams')->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('position')->default(0)->after('team_id');
         });
-
-        DB::statement(
-            "UPDATE entries
-             SET team_id = (
-                 SELECT team_id
-                 FROM participants
-                 WHERE participants.id = entries.participant_id
-                 LIMIT 1
-             )"
-        );
 
         Schema::table('entries', function (Blueprint $table) {
             $table->dropForeign(['participant_id']);

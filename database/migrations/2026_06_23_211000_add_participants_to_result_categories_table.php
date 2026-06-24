@@ -13,15 +13,6 @@ return new class extends Migration {
                 $table->unsignedInteger('participants')->default(0)->after('name');
             });
         }
-
-        DB::statement(
-            'UPDATE result_categories
-             SET participants = COALESCE((
-                 SELECT events.participants
-                 FROM events
-                 WHERE events.id = result_categories.event_id
-             ), participants)'
-        );
     }
 
     public function down(): void

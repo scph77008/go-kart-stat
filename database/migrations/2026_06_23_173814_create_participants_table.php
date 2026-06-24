@@ -13,9 +13,7 @@ return new class extends Migration {
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', array_column(EventType::cases(), 'value'))
-                ->default(EventType::TEAM->value)
-                ->comment('Participant type');
+            $table->enum('type', array_column(EventType::cases(), 'value'))->default(EventType::TEAM->value);
             $table->foreignId('team_id')
                 ->nullable()
                 ->comment('Team')
