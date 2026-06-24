@@ -32,6 +32,7 @@ class EventsTable
                 TextColumn::make('date')
                     ->date()
                     ->sortable(),
+                /** @see \App\Models\Event::durationLabel() */
                 TextColumn::make('duration_label')
                     ->label('Duration')
                     ->numeric()

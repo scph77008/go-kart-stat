@@ -16,7 +16,10 @@ class EntryObserver
      */
     public function created(Entry $entry): void
     {
-        $categories = ResultCategory::where('event_id', $entry->event_id)
+       /*
+        * Пока что закомментируем, а то дублируется
+        * 
+        * $categories = ResultCategory::where('event_id', $entry->event_id)
             ->where('is_required', true)
             ->get();
 
@@ -26,5 +29,6 @@ class EntryObserver
                 'result_category_id' => $category->id,
             ]);
         }
+        */
     }
 }

@@ -32,9 +32,11 @@ class EntriesRelationManager extends RelationManager
     {
         return $schema->components([
             Select::make('participant_id')
-                ->label('Participant')
+                ->relationship('participant', 'display_name')
                 ->options(fn() => Participant::query()
                     ->with(['team', 'pilot'])
+                    // Только тех, кто подходит по типу события (команда или пилот)
+                    ->where('type', '=', $this->ownerRecord->type)
                     ->get()
                     ->mapWithKeys(fn(Participant $participant) => [
                         $participant->id => $participant->display_name,
@@ -50,8 +52,7 @@ class EntriesRelationManager extends RelationManager
                 ->schema([
                     Select::make('result_category_id')
                         ->label('Зачёт')
-                        ->options(fn ($livewire) =>
-                        $livewire->ownerRecord
+                        ->options(fn($livewire) => $livewire->ownerRecord
                             ->resultCategories
                             ->pluck('name', 'id')
                         )
