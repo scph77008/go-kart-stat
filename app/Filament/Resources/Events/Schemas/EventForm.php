@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Filament\Resources\Events\EventDurationType;
 use App\Filament\Resources\Events\EventType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
@@ -19,11 +20,27 @@ class EventForm
             ->components([
                 TextInput::make('name')
                     ->required(),
+
+                // Чемпионат
                 Select::make('championship_id')
+                    ->label('Чемпионат')
                     ->relationship('championship', 'name')
+                    ->searchable()
+                    ->preload()
+
+                    // Создание чемпионата на лету
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label('Название')
+                            ->required()
+                            ->maxLength(255),
+                    ])
                     ->required(),
+
                 DatePicker::make('date')
                     ->required(),
+
+                // Длительность
                 TextInput::make('duration')
                     ->required()
                     ->numeric(),
@@ -36,14 +53,36 @@ class EventForm
 
                 // Картодром
                 Select::make('track_id')
+                    ->label('Картодром')
                     ->relationship('track', 'name')
+                    ->searchable()
+                    ->preload()
+
+                    // Создание картодромов на лету
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label('Название')
+                            ->required(),
+
+                        TextInput::make('location')
+                            ->label('Локация')
+                            ->required(),
+
+                        TextInput::make('length')
+                            ->label('Длина (м)')
+                            ->numeric()
+                            ->required(),
+                    ])
                     ->required(),
+
                 Toggle::make('reverse')
                     ->required(),
+
                 TextInput::make('participants')
                     ->required()
                     ->numeric()
                     ->default(0),
+
                 Select::make('type')
                     ->required()
                     ->options(EventType::class)
@@ -60,10 +99,10 @@ class EventForm
                             ->required()
                             ->numeric()
                             ->minValue(0)
-                            ->default(fn (Get $get) => $get->integer('../../participants')),
+                            ->default(fn(Get $get) => $get->integer('../../participants')),
                     ])
                     ->addActionLabel('Add category')
-                    ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+                    ->itemLabel(fn(array $state): ?string => $state['name'] ?? null)
                     ->columnSpanFull(),
             ]);
     }
