@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Filament\Resources\Events\EventDurationType;
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventDurationType;
+use App\Enums\EventType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $duration
  * @property bool $reverse
  * @property-read EventType $type
- * @property-read EventDurationType $duration_type
+ * @property-read \App\Enums\EventDurationType $duration_type
  * @property-read HasMany $resultCategories
  */
 class Event extends Model

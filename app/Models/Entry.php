@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int|null $number
  * @property string|null $comment
  *
- * @property-read \App\Models\Event $event
+ * @property-read Event $event
+ * @property-read Team|Pilot $entrant
  */
 class Entry extends Model
 {

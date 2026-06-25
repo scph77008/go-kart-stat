@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
-use App\Filament\Resources\Events\EventDurationType;
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventDurationType;
+use App\Enums\EventType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;

@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Events\RelationManagers;
 
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventType;
+use App\Models\Entry;
 use App\Models\Pilot;
 use App\Models\Team;
 use Filament\Actions\CreateAction;
@@ -138,7 +139,7 @@ class EntriesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('entrant')
                     ->label('Участник')
-                    ->formatStateUsing(fn ($record) =>
+                    ->formatStateUsing(fn (Entry $record) =>
                         $record->entrant?->display_name
                         ?? $record->entrant?->name
                         ?? $record->entrant?->surname

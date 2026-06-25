@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventType;
 use App\Models\Pilot;
 use App\Models\Team;
 use Carbon\CarbonImmutable;

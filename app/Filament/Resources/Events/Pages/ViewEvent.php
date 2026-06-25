@@ -16,4 +16,6 @@ class ViewEvent extends ViewRecord
             EditAction::make(),
         ];
     }
+
+
 }

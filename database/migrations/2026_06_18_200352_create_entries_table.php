@@ -1,6 +1,6 @@
 <?php
 
-use App\Filament\Resources\Events\EventType;
+use App\Enums\EventType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

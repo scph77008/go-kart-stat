@@ -1,5 +1,5 @@
 <?php
-namespace App\Filament\Resources\Events;
+namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
