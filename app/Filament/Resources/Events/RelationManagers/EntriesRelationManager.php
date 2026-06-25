@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Events\RelationManagers;
 
 use App\Filament\Resources\Events\EventType;
-use App\Models\Event;
 use App\Models\Pilot;
 use App\Models\Team;
 use Filament\Actions\CreateAction;
@@ -18,7 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 /**
- * @property-read Event $ownerRecord
+ * @property-read \App\Models\Event $ownerRecord
  */
 class EntriesRelationManager extends RelationManager
 {
@@ -32,74 +31,92 @@ class EntriesRelationManager extends RelationManager
         return false;
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        // Тип участника совпадает с типом события, поэтому предзаполним его
-        $data['entrant_type'] = $this->ownerRecord->type;
-
-        return $data;
-    }
-
     public function form(Schema $schema): Schema
     {
         return $schema->components([
 
-            Select::make('entrant_id')
+            TextInput::make('number')
+                ->numeric(),
+
+            /**
+             * Morph select (Team / Pilot)
+             */
+            Select::make('entrant')
                 ->label('Участник')
                 ->searchable()
                 ->preload()
-                ->options(function (EntriesRelationManager $livewire) {
-                    if ($livewire->ownerRecord->type === EventType::TEAM) {
-                        return Team::query()->pluck('name', 'id');
-                    }
 
-                    return Pilot::query()
-                        ->get()
-                        ->mapWithKeys(fn ($p) => [
-                            $p->id => $p->surname.' '.$p->name,
-                        ]);
+                ->options(function () {
+
+                    return match ($this->ownerRecord->type) {
+
+                        EventType::TEAM => Team::query()
+                            ->pluck('name', 'id'),
+
+                        EventType::INDIVIDUAL => Pilot::query()
+                            ->get()
+                            ->mapWithKeys(fn ($pilot) => [
+                                $pilot->id => $pilot->surname . ' ' . $pilot->name,
+                            ]),
+
+                        default => [],
+                    };
                 })
-                ->createOptionForm(function (EntriesRelationManager $livewire) {
-                    if ($livewire->ownerRecord->type === EventType::TEAM) {
-                        return [
+
+                /**
+                 * CREATE NEW OPTION
+                 */
+                ->createOptionForm(function () {
+
+                    return match ($this->ownerRecord->type) {
+
+                        EventType::TEAM => [
                             TextInput::make('name')
                                 ->label('Название команды')
                                 ->required()
                                 ->maxLength(255),
-                        ];
-                    }
+                        ],
+
+                        EventType::INDIVIDUAL => [
+                            TextInput::make('surname')
+                                ->label('Фамилия')
+                                ->required(),
+
+                            TextInput::make('name')
+                                ->label('Имя')
+                                ->required(),
+                        ],
+                    };
+                })
+
+                ->createOptionUsing(function (array $data) {
+                    return match ($this->ownerRecord->type) {
+                        EventType::TEAM => Team::create($data)->id,
+                        EventType::INDIVIDUAL => Pilot::create($data)->id,
+                    };
+                })
+
+                ->dehydrateStateUsing(function ($state) {
+                    $modelClass = match ($this->ownerRecord->type) {
+                        EventType::TEAM => Team::class,
+                        EventType::INDIVIDUAL => Pilot::class,
+                    };
 
                     return [
-                        TextInput::make('surname')
-                            ->label('Фамилия')
-                            ->required(),
-
-                        TextInput::make('name')
-                            ->label('Имя')
-                            ->required(),
+                        'entrant_type' => $modelClass,
+                        'entrant_id' => $state,
                     ];
                 })
-                ->createOptionUsing(function (array $data, EntriesRelationManager $livewire) {
-                    if ($livewire->ownerRecord->type === EventType::TEAM) {
-                        return Team::create($data)->id;
-                    }
 
-                    return Pilot::create([
-                        'name' => $data['name'],
-                        'surname' => $data['surname'],
-                    ])->id;
-                }),
-
-            TextInput::make('number')
-                ->numeric(),
+                ->required(),
 
             Repeater::make('results')
                 ->relationship()
                 ->schema([
                     Select::make('result_category_id')
                         ->label('Зачёт')
-                        ->options(fn (EntriesRelationManager $livewire) => $livewire->ownerRecord
-                            ->resultCategories
+                        ->options(fn () =>
+                        $this->ownerRecord->resultCategories
                             ->pluck('name', 'id')
                         )
                         ->required(),
@@ -111,7 +128,6 @@ class EntriesRelationManager extends RelationManager
                     TextInput::make('gap')
                         ->label('Отставание, %'),
                 ]),
-
         ]);
     }
 
@@ -120,15 +136,19 @@ class EntriesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
-                TextColumn::make('participant.display_name')
-                    ->label('Participant'),
+                TextColumn::make('entrant')
+                    ->label('Участник')
+                    ->formatStateUsing(fn ($record) =>
+                        $record->entrant?->display_name
+                        ?? $record->entrant?->name
+                        ?? $record->entrant?->surname
+                    ),
+
                 TextColumn::make('number')
                     ->numeric(),
             ])
             ->headerActions([
-                CreateAction::make()
-                    ->visible()
-                    ->authorize(fn () => true),
+                CreateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),

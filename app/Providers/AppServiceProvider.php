@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Filament\Resources\Events\EventType;
+use App\Models\Pilot;
+use App\Models\Team;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        Relation::morphMap([
+            EventType::TEAM->value => Team::class,
+            EventType::INDIVIDUAL->value => Pilot::class,
+        ]);
     }
 
     /**
