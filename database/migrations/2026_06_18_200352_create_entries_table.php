@@ -1,11 +1,11 @@
 <?php
 
+use App\Filament\Resources\Events\EventType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -23,14 +23,27 @@ return new class extends Migration
                 ->cascadeOnUpdate();
 
             $table
-                ->foreignId('team_id')
-                ->nullable(false)
-                ->comment('Команда')
-                ->constrained('teams')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
+                ->enum('entrant_type', array_column(EventType::cases(), 'value'))
+                ->default(EventType::TEAM->value)
+                ->comment('Тип участника');
+
+            $table
+                ->unsignedBigInteger('entrant_id')
+                ->nullable()
+                ->comment('ID участника');
+
+            $table
+                ->unsignedInteger('number')
+                ->nullable()
+                ->comment('Номер участника');
+
+            $table->boolean('position')
+                ->default(0)
+                ->comment('Позиция');
 
             $table->timestamps();
+
+            $table->index(['entrant_type', 'entrant_id']);
         });
     }
 
