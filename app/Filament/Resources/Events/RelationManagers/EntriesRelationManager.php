@@ -9,6 +9,7 @@ use App\Models\Team;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -32,6 +33,14 @@ class EntriesRelationManager extends RelationManager
         return false;
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        // Тип участника совпадает с типом события, поэтому предзаполним его
+        $data['entrant_type'] = $this->ownerRecord->type;
+
+        return $data;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -39,38 +48,31 @@ class EntriesRelationManager extends RelationManager
             TextInput::make('number')
                 ->numeric(),
 
-            /**
-             * Morph select (Team / Pilot)
-             */
-            Select::make('entrant')
+            Hidden::make('entrant_type')
+                ->default(function (EntriesRelationManager $livewire) {
+                    return $livewire->ownerRecord->type;
+                }),
+
+            Select::make('entrant_id')
                 ->label('Участник')
                 ->searchable()
                 ->preload()
-
                 ->options(function () {
-
                     return match ($this->ownerRecord->type) {
-
                         EventType::TEAM => Team::query()
                             ->pluck('name', 'id'),
 
                         EventType::INDIVIDUAL => Pilot::query()
                             ->get()
-                            ->mapWithKeys(fn ($pilot) => [
+                            ->mapWithKeys(fn($pilot) => [
                                 $pilot->id => $pilot->surname . ' ' . $pilot->name,
                             ]),
 
                         default => [],
                     };
                 })
-
-                /**
-                 * CREATE NEW OPTION
-                 */
                 ->createOptionForm(function () {
-
                     return match ($this->ownerRecord->type) {
-
                         EventType::TEAM => [
                             TextInput::make('name')
                                 ->label('Название команды')
@@ -89,26 +91,12 @@ class EntriesRelationManager extends RelationManager
                         ],
                     };
                 })
-
                 ->createOptionUsing(function (array $data) {
                     return match ($this->ownerRecord->type) {
                         EventType::TEAM => Team::create($data)->id,
                         EventType::INDIVIDUAL => Pilot::create($data)->id,
                     };
                 })
-
-                ->dehydrateStateUsing(function ($state) {
-                    $modelClass = match ($this->ownerRecord->type) {
-                        EventType::TEAM => Team::class,
-                        EventType::INDIVIDUAL => Pilot::class,
-                    };
-
-                    return [
-                        'entrant_type' => $modelClass,
-                        'entrant_id' => $state,
-                    ];
-                })
-
                 ->required(),
 
             Repeater::make('results')
@@ -116,8 +104,7 @@ class EntriesRelationManager extends RelationManager
                 ->schema([
                     Select::make('result_category_id')
                         ->label('Зачёт')
-                        ->options(fn () =>
-                        $this->ownerRecord->resultCategories
+                        ->options(fn() => $this->ownerRecord->resultCategories
                             ->pluck('name', 'id')
                         )
                         ->required(),
@@ -136,18 +123,15 @@ class EntriesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('id')
-            ->columns([
-                TextColumn::make('entrant')
+            ->columns(array(
+                /** @see Entry::getEntrantNameAttribute */
+                TextColumn::make('entrant_name')
                     ->label('Участник')
-                    ->formatStateUsing(fn (Entry $record) =>
-                        $record->entrant?->display_name
-                        ?? $record->entrant?->name
-                        ?? $record->entrant?->surname
-                    ),
+                    ->formatStateUsing(fn(Entry $record) => $record->entrant->getDisplayName()),
 
                 TextColumn::make('number')
                     ->numeric(),
-            ])
+            ))
             ->headerActions([
                 CreateAction::make(),
             ])

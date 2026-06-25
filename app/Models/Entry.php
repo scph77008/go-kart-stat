@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EventType;
+use App\Contracts\EntrantInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string|null $comment
  *
  * @property-read Event $event
- * @property-read Team|Pilot $entrant
+ * @property-read EntrantInterface $entrant
  */
 class Entry extends Model
 {
@@ -59,5 +60,16 @@ class Entry extends Model
     public function results(): HasMany
     {
         return $this->hasMany(EntryResult::class);
+    }
+
+    public function getEntrantNameAttribute(): string
+    {
+        $entrant = $this->entrant;
+
+        if (!$entrant) {
+            return '—';
+        }
+
+        return $entrant->getDisplayName();
     }
 }

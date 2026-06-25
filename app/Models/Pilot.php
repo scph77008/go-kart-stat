@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Contracts\EntrantInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property int $id
  * @property string $surname
  * @property string $name
  * @property \DateTime $birthday
  */
-class Pilot extends Model
+class Pilot extends Model implements EntrantInterface
 {
     protected $fillable = [
         'surname',
@@ -21,13 +24,18 @@ class Pilot extends Model
         'birthday' => 'date'
     ];
 
-    public function entryPilots()
+    public function entryPilots(): HasMany
     {
         return $this->hasMany(EntryPilot::class);
     }
 
-    protected function fullName()
+    public function getDisplayName(): string
     {
-        return trim(sprintf('%s %s', $this->surname, $this->name));
+        return sprintf('%s %s', $this->surname, $this->name);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
