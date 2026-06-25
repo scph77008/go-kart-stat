@@ -6,6 +6,8 @@ use App\Filament\Resources\Events\EventDurationType;
 use App\Filament\Resources\Events\EventType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $name
@@ -13,7 +15,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $track_id
  * @property string $date
  * @property int $duration
- * @property boolean $reverse
+ * @property bool $reverse
+ * @property-read EventType $type
+ * @property-read EventDurationType $duration_type
+ * @property-read HasMany $resultCategories
  */
 class Event extends Model
 {
@@ -34,43 +39,43 @@ class Event extends Model
         'duration_type' => EventDurationType::class,
     ];
 
-    public function championship()
+    public function championship(): BelongsTo
     {
         return $this->belongsTo(Championship::class);
     }
 
-    public function track()
+    public function track(): BelongsTo
     {
         return $this->belongsTo(Track::class);
     }
 
-    public function entries()
+    public function entries(): HasMany
     {
         return $this->hasMany(Entry::class);
     }
 
-    public function resultCategories()
+    public function resultCategories(): HasMany
     {
         return $this->hasMany(ResultCategory::class);
     }
 
     protected function durationLabel(): Attribute
     {
-        if($this->duration_type === EventDurationType::MINUTES) {
+        if ($this->duration_type === EventDurationType::MINUTES) {
             return $this->durationLabelInMinutes();
         }
 
         return $this->durationLabelInLaps();
     }
 
-    private function durationLabelInMinutes()
+    private function durationLabelInMinutes(): Attribute
     {
         return Attribute::make(
             get: fn () => sprintf('%2.f ч.', $this->duration / 60)
         );
     }
 
-    private function durationLabelInLaps()
+    private function durationLabelInLaps(): Attribute
     {
         return Attribute::make(
             get: fn () => sprintf('%d кр', $this->duration)

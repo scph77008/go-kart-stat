@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use App\Filament\Resources\Events\EventType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $event_id
@@ -15,22 +19,37 @@ class Entry extends Model
 {
     protected $fillable = [
         'event_id',
-        'participant_id',
+        'entrant_type',
+        'entrant_id',
         'number',
         'comment',
     ];
 
-    public function event()
+    protected $casts = [
+        'entrant_type' => EventType::class
+    ];
+
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
-    public function pilots()
+    public function team(): HasOne
+    {
+        return $this->hasOne(Team::class);
+    }
+
+    public function pilot(): HasOne
+    {
+        return $this->hasOne(Pilot::class);
+    }
+
+    public function pilots(): HasMany
     {
         return $this->hasMany(EntryPilot::class);
     }
 
-    public function results()
+    public function results(): HasMany
     {
         return $this->hasMany(EntryResult::class);
     }
