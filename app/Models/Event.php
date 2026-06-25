@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property int $championship_id
  * @property int $track_id
- * @property string $date
  * @property int $duration
  * @property bool $reverse
- * @property-read EventType $type
- * @property-read \App\Enums\EventDurationType $duration_type
+ *
+ * @property \Carbon\Carbon $date
+ * @property EventType $type
+ * @property EventDurationType $duration_type
  * @property-read HasMany $resultCategories
  */
 class Event extends Model
@@ -35,6 +36,7 @@ class Event extends Model
     ];
 
     protected $casts = [
+        'date' => 'date',
         'type' => EventType::class,
         'duration_type' => EventDurationType::class,
     ];
