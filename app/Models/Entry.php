@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $event_id
- * @property int $participant_id
  * @property int|null $number
  * @property string|null $comment
  *
  * @property-read \App\Models\Event $event
- * @property-read \App\Models\Participant $participant
  */
 class Entry extends Model
 {
@@ -25,11 +23,6 @@ class Entry extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
-    }
-
-    public function participant()
-    {
-        return $this->belongsTo(Participant::class);
     }
 
     public function pilots()

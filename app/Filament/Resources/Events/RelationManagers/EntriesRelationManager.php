@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Events\RelationManagers;
 
-use App\Models\Participant;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -31,19 +30,7 @@ class EntriesRelationManager extends RelationManager
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Select::make('participant_id')
-                ->relationship('participant', 'display_name')
-                ->options(fn() => Participant::query()
-                    ->with(['team', 'pilot'])
-                    // Только тех, кто подходит по типу события (команда или пилот)
-                    ->where('type', '=', $this->ownerRecord->type)
-                    ->get()
-                    ->mapWithKeys(fn(Participant $participant) => [
-                        $participant->id => $participant->display_name,
-                    ]))
-                ->searchable()
-                ->preload()
-                ->required(),
+
             TextInput::make('number')
                 ->numeric(),
 

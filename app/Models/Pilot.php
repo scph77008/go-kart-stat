@@ -21,11 +21,6 @@ class Pilot extends Model
         'birthday' => 'date'
     ];
 
-    public function participants()
-    {
-        return $this->hasMany(Participant::class);
-    }
-
     public function entryPilots()
     {
         return $this->hasMany(EntryPilot::class);

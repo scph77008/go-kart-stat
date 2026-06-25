@@ -13,9 +13,4 @@ class Team extends Model
         'name',
         'image'
     ];
-
-    public function participants()
-    {
-        return $this->hasMany(Participant::class);
-    }
 }
