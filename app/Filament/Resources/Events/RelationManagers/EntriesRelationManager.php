@@ -7,6 +7,7 @@ use App\Models\Entry;
 use App\Models\EntryPilot;
 use App\Models\Pilot;
 use App\Models\Team;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -15,6 +16,8 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -58,6 +61,7 @@ class EntriesRelationManager extends RelationManager
                 ->label('Участник')
                 ->searchable()
                 ->preload()
+                // В зависимости от типа события грузим разный список участников
                 ->options(function () {
                     return match ($this->ownerRecord->type) {
                         EventType::TEAM => Team::query()
@@ -74,6 +78,7 @@ class EntriesRelationManager extends RelationManager
                         default => [],
                     };
                 })
+                // И можем создавать разные типы участников
                 ->createOptionForm(function () {
                     return match ($this->ownerRecord->type) {
                         EventType::TEAM => [
@@ -94,12 +99,43 @@ class EntriesRelationManager extends RelationManager
                         ],
                     };
                 })
+                // Создаём разные типы конечно же
                 ->createOptionUsing(function (array $data) {
                     return match ($this->ownerRecord->type) {
                         EventType::TEAM => Team::create($data)->id,
                         EventType::INDIVIDUAL => Pilot::create($data)->id,
                     };
                 })
+                ->live()
+                ->suffixAction(
+                    Action::make('loadPrevious')
+                        ->label('Скопировать состав с предыдущего события')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->action(function (Get $get, Set $set) {
+                            /** @var Entry $entry */
+                            $entry = Entry::query()
+                                ->where('entrant_type', EventType::TEAM)
+                                ->where('entrant_id', $get('entrant_id'))
+                                // Не текущее событие (для редактирования, когда ID уже есть)
+                                ->whereNot('event_id', $get('event_id'))
+                                ->latest('event_id')
+                                ->with('pilots')
+                                ->first();
+
+                            if (!$entry) {
+                                return;
+                            }
+
+                            $set(
+                                'pilots',
+                                $entry->pilots
+                                    ->map(function (EntryPilot $pilot) {
+                                        return ['pilot_id' => $pilot->pilot_id];
+                                    })
+                                    ->toArray()
+                            );
+                        })
+                )
                 ->required(),
 
             Repeater::make('pilots')
