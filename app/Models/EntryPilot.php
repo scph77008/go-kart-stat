@@ -9,7 +9,6 @@ class EntryPilot extends Model
     protected $fillable = [
         'entry_id',
         'pilot_id',
-        'role',
     ];
 
     public function entry()

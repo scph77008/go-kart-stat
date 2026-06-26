@@ -25,7 +25,6 @@ class PilotsRelationManager extends RelationManager
                 ->searchable()
                 ->preload()
                 ->required(),
-            TextInput::make('role'),
         ]);
     }
 
@@ -36,7 +35,6 @@ class PilotsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('pilot.surname')
                     ->label('Pilot'),
-                TextColumn::make('role'),
             ])
             ->headerActions([
                 CreateAction::make(),
