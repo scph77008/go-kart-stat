@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Events\RelationManagers;
 
 use App\Enums\EventType;
 use App\Models\Entry;
+use App\Models\EntryPilot;
 use App\Models\Pilot;
 use App\Models\Team;
 use Filament\Actions\CreateAction;
@@ -60,9 +61,11 @@ class EntriesRelationManager extends RelationManager
                 ->options(function () {
                     return match ($this->ownerRecord->type) {
                         EventType::TEAM => Team::query()
+                            ->orderBy('name')
                             ->pluck('name', 'id'),
 
                         EventType::INDIVIDUAL => Pilot::query()
+                            ->orderBy(['surname', 'name'])
                             ->get()
                             ->mapWithKeys(fn($pilot) => [
                                 $pilot->id => $pilot->surname . ' ' . $pilot->name,
@@ -99,6 +102,22 @@ class EntriesRelationManager extends RelationManager
                 })
                 ->required(),
 
+            Repeater::make('pilots')
+                ->relationship()
+                ->schema([
+                    Select::make('pilot_id')
+                        ->relationship('pilot', 'id')
+                        ->getOptionLabelFromRecordUsing(
+                            fn(Pilot $record) => $record->getDisplayName()
+                        )
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('surname')->required(),
+                            TextInput::make('name')->required(),
+                        ])
+                ]),
+
             Repeater::make('results')
                 ->relationship()
                 ->schema([
@@ -127,7 +146,23 @@ class EntriesRelationManager extends RelationManager
                 /** @see Entry::getEntrantNameAttribute */
                 TextColumn::make('entrant_name')
                     ->label('Участник')
-                    ->formatStateUsing(fn(Entry $record) => $record->entrant->getDisplayName()),
+                    ->html()
+                    ->formatStateUsing(function (Entry $record) {
+                        $html = "<strong>{$record->entrant->getDisplayName()}</strong>";
+
+                        if ($record->entrant_type === EventType::TEAM) {
+                            $html .= '<div class="text-sm text-gray-500 mt-1">';
+
+                            $html .= $record->pilots
+                                // todo: ссылка на карточку пилота
+                                ->map(fn(EntryPilot $entryPilot) => e('• ' . $entryPilot->pilot->getDisplayName()))
+                                ->implode('<br>');
+
+                            $html .= '</div>';
+                        }
+
+                        return $html;
+                    }),
 
                 TextColumn::make('number')
                     ->numeric(),
