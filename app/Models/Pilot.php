@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Contracts\EntrantInterface;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property \DateTime $birthday
  */
-class Pilot extends Model implements EntrantInterface
+class Pilot extends AuditableModel implements EntrantInterface
 {
     protected $fillable = [
         'surname',
