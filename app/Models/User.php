@@ -35,6 +35,14 @@ class User extends Authenticatable implements PasskeyUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
+    const int ADMIN_ID = 1;
+
+
+    public function isAdmin(): bool
+    {
+        return $this->id === self::ADMIN_ID;
+    }
+
     /**
      * Get the attributes that should be cast.
      *
