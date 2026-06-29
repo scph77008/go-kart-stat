@@ -27,8 +27,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property bool $disabled
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'disabled'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -37,6 +38,12 @@ class User extends Authenticatable implements PasskeyUser
 
     const int ADMIN_ID = 1;
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'disabled',
+    ];
 
     public function isAdmin(): bool
     {
