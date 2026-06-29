@@ -12,17 +12,17 @@ trait Auditable
     protected static function bootAuditable(): void
     {
         static::creating(function (AuditableModel $model) {
-            $model->created_by = auth()->id() ?? 1;
+            $model->created_by = auth()->id() ?? User::ADMIN_ID;
         });
 
         static::updating(function (AuditableModel $model) {
-            $model->updated_by = auth()->id() ?? 1;
+            $model->updated_by = auth()->id() ?? User::ADMIN_ID;
         });
 
         static::deleting(function (AuditableModel $model) {
             if (!method_exists($model, 'isForceDeleting')
                 || !$model->isForceDeleting()) {
-                $model->deleted_by = auth()->id() ?? 1;
+                $model->deleted_by = auth()->id() ?? User::ADMIN_ID;
                 $model->saveQuietly();
             }
         });
