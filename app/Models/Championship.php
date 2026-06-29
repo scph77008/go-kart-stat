@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Championship extends Model
+class Championship extends AuditableModel
 {
-   protected $fillable = [
+    protected $fillable = [
        'name'
    ];
 }

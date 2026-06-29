@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\EventType;
 use App\Contracts\EntrantInterface;
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\EventType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -18,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Event $event
  * @property-read EntrantInterface $entrant
  */
-class Entry extends Model
+class Entry extends AuditableModel
 {
     protected $fillable = [
         'event_id',

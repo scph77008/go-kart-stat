@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EntryPilot extends Model
+class EntryPilot extends AuditableModel
 {
     protected $fillable = [
         'entry_id',
         'pilot_id',
     ];
 
-    public function entry()
+    public function entry(): BelongsTo
     {
         return $this->belongsTo(Entry::class);
     }
 
-    public function pilot()
+    public function pilot(): BelongsTo
     {
         return $this->belongsTo(Pilot::class);
     }

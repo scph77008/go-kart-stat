@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property $event_id
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $participants
  * @property $is_required
  */
-class ResultCategory extends Model
+class ResultCategory extends AuditableModel
 {
     protected $fillable = [
         'event_id',
@@ -23,7 +23,7 @@ class ResultCategory extends Model
         'is_required' => 'boolean',
     ];
 
-    public function event()
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }

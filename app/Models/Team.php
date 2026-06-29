@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use App\Contracts\EntrantInterface;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
  * @property string $name
  */
-class Team extends Model implements EntrantInterface
+class Team extends AuditableModel implements EntrantInterface
 {
     protected $fillable = [
         'name',

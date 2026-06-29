@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EntryResult extends Model
+class EntryResult extends AuditableModel
 {
     protected $fillable = [
         'entry_id',
@@ -17,12 +17,12 @@ class EntryResult extends Model
         'gap' => 'float'
     ];
 
-    public function entry()
+    public function entry(): BelongsTo
     {
         return $this->belongsTo(Entry::class);
     }
 
-    public function resultCategory()
+    public function resultCategory(): BelongsTo
     {
         return $this->belongsTo(ResultCategory::class);
     }
